@@ -13,7 +13,282 @@
     />
   </head>
   <body>
-    <h1>Sky App</h1>
+    <div class="sky-gradient"></div>
+    <div class="app">
+      <!-- Search bar -->
+      <div class="search-container">
+        <div class="search-flex">
+          <input
+            type="text"
+            name=""
+            id="searchInput"
+            placeholder="Search city..."
+          />
+          <div class="search-results">
+            <div class="result-item">
+              📍
+              <p id="result-city">Florida</p>
+              <p id="result-country">USA</p>
+            </div>
+            <div class="result-item">
+              📍
+              <p id="result-city">Florence</p>
+              <p id="result-country">Italy</p>
+            </div>
+            <div class="result-item">
+              📍
+              <p id="result-city">Floyd</p>
+              <p id="result-country">Georgia</p>
+            </div>
+            <div class="result-item">
+              📍
+              <p id="result-city">Flor</p>
+              <p id="result-country">Sweden</p>
+            </div>
+            <div class="result-item">
+              📍
+              <p id="result-city">Florequence</p>
+              <p id="result-country">Germany</p>
+            </div>
+          </div>
+        </div>
+
+        <button type="button">°C / °F</button>
+      </div>
+
+      <!-- Hero -->
+      <div class="information-container">
+        <div class="city-details">
+          <div class="location-details">
+            <div class="location-dot"></div>
+            <div class="location-name">DHAKAR, PAKISTAN</div>
+          </div>
+          <div class="location-date">Sun, 28 Jun</div>
+        </div>
+        <div class="temp">
+          <h1 class="temp-value">31</h1>
+          <div class="temp-deg">°C</div>
+        </div>
+        <div class="weather-condition">Light Drizzle</div>
+        <div class="feels-like">
+          Feels like <span class="feels-like-temp">22</span
+          ><span class="feels-like-temp">°C</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-container">
+        <div class="stat-item">
+          <div class="stat-tag">HUMIDITY</div>
+          <div class="stat-value"><span id="humidity-value">71</span>%</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-tag">WIND</div>
+          <div class="stat-value"><span id="wind-value">15</span>km/h</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-tag">UV INDEX</div>
+          <div class="stat-value"><span id="uvIndex-value">High</span></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-tag">VISIBILITY</div>
+          <div class="stat-value"><span id="visibility-value">9</span>km</div>
+        </div>
+      </div>
+
+      <!-- Hourly Stats -->
+      <div class="hourly-stats">
+        <h2 class="section-tag">HOURLY</h2>
+        <div class="hourly-container">
+          <div class="hourly-item active">
+            <div class="hourly-time">Now</div>
+            <div class="hourly-icon">☀️</div>
+            <div class="hourly-temp">31°C</div>
+            <div class="hourly-rain"></div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">6am</div>
+            <div class="hourly-icon">☀️</div>
+            <div class="hourly-temp">31°C</div>
+            <div class="hourly-rain"></div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">7am</div>
+            <div class="hourly-icon">☀️</div>
+            <div class="hourly-temp">32°C</div>
+            <div class="hourly-rain"></div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">8am</div>
+            <div class="hourly-icon">☀️</div>
+            <div class="hourly-temp">33°C</div>
+            <div class="hourly-rain">1%</div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">9am</div>
+            <div class="hourly-icon">☀️</div>
+            <div class="hourly-temp">34°C</div>
+            <div class="hourly-rain">2%</div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">10am</div>
+            <div class="hourly-icon">☀️</div>
+            <div class="hourly-temp">36°C</div>
+            <div class="hourly-rain">2%</div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">11am</div>
+            <div class="hourly-icon">⛈️</div>
+            <div class="hourly-temp">37°C</div>
+            <div class="hourly-rain">12%</div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">12pm</div>
+            <div class="hourly-icon">⛈️</div>
+            <div class="hourly-temp">38°C</div>
+            <div class="hourly-rain">13%</div>
+          </div>
+          <div class="hourly-item">
+            <div class="hourly-time">12pm</div>
+            <div class="hourly-icon">⛈️</div>
+            <div class="hourly-temp">38°C</div>
+            <div class="hourly-rain">13%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Stats -->
+      <div class="weekly-stats">
+        <h2 class="section-tag">7-DAY FORECAST</h2>
+        <div class="weekly-container">
+          <div class="weekly-item">
+            <div class="weekly-date">Today</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">⛈️</div>
+              <div class="weekly-weather-description">Clear sky</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar"></div>
+              </div>
+              <div class="rain-percentage">2%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">40°</div>
+              <div class="weekly-low">31°</div>
+            </div>
+          </div>
+          <div class="weekly-item">
+            <div class="weekly-date">Tue, Jun 30</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">⛈️</div>
+              <div class="weekly-weather-description">Thunderstorm</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar"></div>
+              </div>
+              <div class="rain-percentage">10%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">40°</div>
+              <div class="weekly-low">29°</div>
+            </div>
+          </div>
+          <div class="weekly-item">
+            <div class="weekly-date">Wed, Jul 1</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">⛈️</div>
+              <div class="weekly-weather-description">Thunderstorm</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar"></div>
+              </div>
+              <div class="rain-percentage">57%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">40°</div>
+              <div class="weekly-low">28°</div>
+            </div>
+          </div>
+          <div class="weekly-item">
+            <div class="weekly-date">Thu, Jul 2</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">⛈️</div>
+              <div class="weekly-weather-description">Thunderstorm</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar"></div>
+              </div>
+              <div class="rain-percentage">78%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">37°</div>
+              <div class="weekly-low">26°</div>
+            </div>
+          </div>
+          <div class="weekly-item">
+            <div class="weekly-date">Fri, Jul 3</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">⛈️</div>
+              <div class="weekly-weather-description">Thunderstorm</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar"></div>
+              </div>
+              <div class="rain-percentage">78%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">36°</div>
+              <div class="weekly-low">25°</div>
+            </div>
+          </div>
+          <div class="weekly-item">
+            <div class="weekly-date">Sat, Jul 4</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">⛈️</div>
+              <div class="weekly-weather-description">Thunderstorm</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar"></div>
+              </div>
+              <div class="rain-percentage">38%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">36°</div>
+              <div class="weekly-low">27°</div>
+            </div>
+          </div>
+          <div class="weekly-item">
+            <div class="weekly-date">Sun, Jul 5</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">⛈️</div>
+              <div class="weekly-weather-description">Thunderstorm</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar"></div>
+              </div>
+              <div class="rain-percentage">45%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">40°</div>
+              <div class="weekly-low">31°</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <div class="divide"></div>
+        <div class="credits">Open-Meteo · Data updates every hour</div>
+      </footer>
+    </div>
     <script src="./js/script.js"></script>
   </body>
 </html>
