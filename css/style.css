@@ -173,22 +173,22 @@ button:hover {
 }
 
 .location-dot {
-  width: 7.5px;
-  height: 7.5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background-color: var(--slate);
 }
 
 .location-name {
   color: var(--slate);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
 
 .location-date {
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.7rem;
 }
 
 .temp {
@@ -211,13 +211,13 @@ button:hover {
 }
 
 .weather-condition {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: var(--muted);
   margin-top: -5px;
 }
 
 .feels-like {
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   color: var(--muted);
   margin: 0.2rem 0;
 }
@@ -452,6 +452,13 @@ footer {
   }
   .city-details {
     margin-bottom: -20px;
+  }
+  .location-dot {
+    width: 7.5px;
+    height: 7.5px;
+  }
+  .location-name {
+    font-size: 0.85rem;
   }
   .location-name {
     font-size: 0.85rem;
