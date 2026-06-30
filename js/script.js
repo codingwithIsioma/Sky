@@ -3,9 +3,10 @@ const searchResultContainer = document.querySelector(".search-results");
 const locationInformationContainer = document.querySelector(
   ".information-container",
 );
+const statsContainer = document.querySelector(".stats-container");
 
 // ============================ UI DISPLAY FUNCTIONS ==========================
-// Display search results
+// Display search suggestions
 const displaySearchResults = (results) => {
   let resultHTML = "";
   results.map((result) => {
@@ -13,7 +14,7 @@ const displaySearchResults = (results) => {
             <div class="result-item" data-lon="${result.longitude}" data-lat="${result.latitude}" data-name="${result.name}" data-country="${result.country}">
               📍
               <p id="result-city">${result.name}</p>
-              <p id="result-country">${result.country}</p>
+              <p id="result-country">${result.country ? result.country : ""}</p>
             </div>
         `;
   });
@@ -34,7 +35,7 @@ const displayCurrentWeather = (data, cityName, country) => {
     <div class="city-details">
         <div class="location-details">
             <div class="location-dot"></div>
-            <div class="location-name">${cityName}, ${country}</div>
+            <div class="location-name">${cityName}, ${country ? country : ""}</div>
         </div>
         <div class="location-date">${getDate}</div>
     </div>
@@ -53,7 +54,34 @@ const displayCurrentWeather = (data, cityName, country) => {
 };
 
 // Update the DOM with the stats data
-const displayWeatherStats = () => {};
+const displayWeatherStats = (data) => {
+  const currentHumidity = data.current.relative_humidity_2m;
+  const currentWindSpeed = data.current.wind_speed_10m;
+  const uvIndex = data.daily.uv_index_max[0];
+  const uvIndexDesc = getUVIndex(Math.round(uvIndex));
+  const currentVisibility = data.hourly.visibility[0];
+  const visibilityInKM = currentVisibility / 1000;
+
+  let displayStats = `
+        <div class="stat-item">
+          <div class="stat-tag">HUMIDITY</div>
+          <div class="stat-value"><span id="humidity-value">${currentHumidity}</span>%</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-tag">WIND</div>
+          <div class="stat-value"><span id="wind-value">${Math.round(currentWindSpeed)}</span>km/h</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-tag">UV INDEX</div>
+          <div class="stat-value"><span id="uvIndex-value">${uvIndexDesc}</span></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-tag">VISIBILITY</div>
+          <div class="stat-value"><span id="visibility-value">${Math.round(visibilityInKM)}</span>km</div>
+        </div>
+  `;
+  statsContainer.innerHTML = displayStats;
+};
 
 // Update the DOM with hourly weather data
 const displayHourlyForecast = () => {};
@@ -119,6 +147,7 @@ async function handleSuggestionSearch(suggestion) {
       searchResultContainer.style.display = "none";
       searchInput.value = "";
       displayCurrentWeather(weatherResponse, cityName, countryName);
+      displayWeatherStats(weatherResponse);
     }
   } catch (error) {
     throw new Error(error);
@@ -130,6 +159,7 @@ async function handleSuggestionSearch(suggestion) {
 searchInput.addEventListener("input", (e) => {
   const searchValue = e.target.value;
   if (!searchValue) {
+    searchResultContainer.style.display = "none";
     return;
   }
   getSuggestions(searchValue);

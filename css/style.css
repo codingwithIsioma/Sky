@@ -7,18 +7,12 @@
 }
 
 :root {
-  --bg: #f0f4f8;
-  --deep: #1a2332;
-  --slate: #4a6fa5;
-  --muted: #8899aa;
-  --border: #d4dde8;
-  --card: rgba(255, 255, 255, 0.65);
-  --clear: #aed6f1;
-  --cloudy: #b8c4ce;
-  --rain: #7a8fa3;
-  --night: #2c3e55;
-  --snow: #d8e8f0;
-  --thunder: #4a4060;
+  --bg: #11151c;
+  --deep: #f0f4f8;
+  --slate: #7da3d6;
+  --muted: #6b7888;
+  --border: #232b38;
+  --card: rgba(255, 255, 255, 0.04);
   --dm-sans: "DM Sans", sans-serif;
   --lora: "Lora", serif;
   --transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -41,12 +35,8 @@ body {
   position: fixed;
   inset: 0;
   z-index: -10;
-  opacity: 0.35;
-  background: radial-gradient(
-    ellipse at 40% 0%,
-    var(--night) 0%,
-    transparent 70%
-  );
+  opacity: 0.12;
+  background: radial-gradient(ellipse at 40% 0%, #9aaab8 0%, transparent 70%);
   transition: var(--transition);
   pointer-events: none;
 }
@@ -66,7 +56,7 @@ body {
 input {
   width: 100%;
   padding: 0.8rem 2.5rem;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 15px;
   color: var(--deep);
   font-size: 16px;
@@ -87,7 +77,7 @@ input:focus {
 button {
   min-width: fit-content;
   padding: 0.8rem 0.9rem;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 15px;
   background-color: var(--card);
   color: var(--slate);
@@ -113,7 +103,7 @@ button:hover {
 
 .search-results {
   position: absolute;
-  background-color: #fff;
+  background-color: #161c26;
   border-radius: 15px;
   box-shadow: 0 0 5px 1px var(--border);
   width: inherit;
@@ -152,6 +142,15 @@ button:hover {
 .result-item p:nth-child(2) {
   font-size: 0.75rem;
   color: var(--muted);
+}
+
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
 /* =========== HERO ============== */
@@ -233,7 +232,7 @@ button:hover {
 .stats-container {
   background-color: var(--card);
   border-radius: 15px;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   justify-content: center;
@@ -246,7 +245,7 @@ button:hover {
   gap: 0.25rem;
   padding: 0.8rem;
   flex-direction: column;
-  border-right: 1px solid var(--border);
+  border-right: 1.5px solid var(--border);
 }
 
 .stat-item:last-child {
@@ -302,9 +301,14 @@ button:hover {
   gap: 0.25rem;
   background-color: var(--card);
   padding: 0.5rem 1.1rem;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   transition: var(--transition);
+}
+
+.active {
+  background-color: var(--slate);
+  color: var(--bg);
 }
 
 .hourly-time {
@@ -330,12 +334,12 @@ button:hover {
 
 .hourly-item:focus,
 .hourly-item:hover {
-  background-color: var(--deep);
+  background-color: #11151c8b;
 }
 
 .hourly-item:focus .hourly-temp,
 .hourly-item:hover .hourly-temp {
-  color: #fff;
+  color: var(--bg);
 }
 
 .hourly-item:focus .hourly-rain,
@@ -343,15 +347,10 @@ button:hover {
   color: var(--muted);
 }
 
-.active {
-  background-color: var(--deep);
-  color: #fff;
-}
-
 /* WEEKLY STATS */
 .weekly-container {
   background-color: var(--card);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 15px;
 }
 
@@ -359,7 +358,7 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1.5px solid var(--border);
   padding: 0.25rem 1rem;
   transition: var(--transition);
 }
@@ -369,7 +368,7 @@ button:hover {
 }
 
 .weekly-item:hover {
-  background-color: #fff;
+  background-color: #11151c8b;
 }
 
 .weekly-item:first-child:hover {
@@ -590,7 +589,7 @@ footer {
     padding: 1rem 1.2rem;
   }
   .hourly-item:hover {
-    background-color: #fff;
+    background-color: #11151c8b;
     transform: translateY(-2px);
   }
   .hourly-item:hover .hourly-temp {
