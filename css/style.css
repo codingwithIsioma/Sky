@@ -69,7 +69,7 @@ input {
   border: 1px solid var(--border);
   border-radius: 15px;
   color: var(--deep);
-  font-size: 0.9rem;
+  font-size: 16px;
   font-family: var(--dm-sans);
   outline: none;
   background-color: var(--card);
@@ -184,6 +184,7 @@ button:hover {
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .location-date {
@@ -214,6 +215,7 @@ button:hover {
   font-size: 0.85rem;
   color: var(--muted);
   margin-top: -5px;
+  text-transform: capitalize;
 }
 
 .feels-like {
