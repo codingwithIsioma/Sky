@@ -4,6 +4,7 @@ const locationInformationContainer = document.querySelector(
   ".information-container",
 );
 const statsContainer = document.querySelector(".stats-container");
+const weeklyContainer = document.querySelector(".weekly-container");
 
 // ============================ UI DISPLAY FUNCTIONS ==========================
 // Display search suggestions
@@ -87,7 +88,41 @@ const displayWeatherStats = (data) => {
 const displayHourlyForecast = () => {};
 
 // Update the DOM with 7-day forecast
-const displayForecast = (daily) => {};
+const displayForecast = (daily) => {
+  const dailyDate = daily.time;
+  const getCustomDates = dailyDate.map((date) => forecastCustomDate(date));
+  getCustomDates[0] = "Today";
+  const dailyWeatherCode = daily.weather_code;
+  const getDailyWeatherIconAndDescription =
+    convertWeatherCode(dailyWeatherCode);
+  const dailyRainPercentage = daily.precipitation_probability_max;
+  const dailyTemperatureMax = daily.temperature_2m_max;
+  const dailyTemperatureMin = daily.temperature_2m_min;
+
+  let forecastHTML = "";
+  for (let i = 0; i < 7; i++) {
+    forecastHTML += `
+          <div class="weekly-item">
+            <div class="weekly-date">${getCustomDates[i]}</div>
+            <div class="weekly-weather-information">
+              <div class="weekly-weather-icon">${getDailyWeatherIconAndDescription[i].icon}</div>
+              <div class="weekly-weather-description">${getDailyWeatherIconAndDescription[i].desc}</div>
+            </div>
+            <div class="weekly-rain-percentage">
+              <div class="rain-progress">
+                <div class="bar" style="width: ${Math.round(dailyRainPercentage[i])}%"></div>
+              </div>
+              <div class="rain-percentage">${Math.round(dailyRainPercentage[i])}%</div>
+            </div>
+            <div class="weekly-high-low">
+              <div class="weekly-high">${Math.round(dailyTemperatureMax[i])}°</div>
+              <div class="weekly-low">${Math.round(dailyTemperatureMin[i])}°</div>
+            </div>
+          </div>
+    `;
+  }
+  weeklyContainer.innerHTML = forecastHTML;
+};
 
 // ============================ ASYNC FUNCTIONS ===========================
 // Get coordinates for a city name
@@ -108,7 +143,7 @@ async function getCoordinates(city) {
 // Fetch current weather, hourly forecast and 7-day forecast
 async function getWeather(lat, lon) {
   try {
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,uv_index_max&hourly=temperature_2m,rain,weather_code,visibility&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,wind_speed_10m,weather_code`;
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_max&hourly=temperature_2m,rain,weather_code,visibility&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,wind_speed_10m,weather_code`;
     const response = await fetch(weatherUrl);
     if (!response.ok) {
       throw new Error("There was an error in fetching data.");
@@ -148,6 +183,7 @@ async function handleSuggestionSearch(suggestion) {
       searchInput.value = "";
       displayCurrentWeather(weatherResponse, cityName, countryName);
       displayWeatherStats(weatherResponse);
+      displayForecast(weatherResponse.daily);
     }
   } catch (error) {
     throw new Error(error);
@@ -235,4 +271,20 @@ const customDate = (date) => {
   let customizedDate = newDate.toUTCString();
   customizedDate = customizedDate.split(" ").splice(0, 3).join(" ");
   return customizedDate;
+};
+const forecastCustomDate = (date) => {
+  const newDate = new Date(date);
+  const customizedDate = newDate.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  return customizedDate;
+};
+// Returns the weather icon for the next 7 days
+const convertWeatherCode = (codes) => {
+  const weatherCodes = codes.map((code) => {
+    return getWeatherDescription(code);
+  });
+  return weatherCodes;
 };

@@ -35,8 +35,8 @@ body {
   position: fixed;
   inset: 0;
   z-index: -10;
-  opacity: 0.12;
-  background: radial-gradient(ellipse at 40% 0%, #9aaab8 0%, transparent 70%);
+  opacity: 0.35;
+  background: radial-gradient(ellipse at 40% 0%, #2c3e55 0%, transparent 70%);
   transition: var(--transition);
   pointer-events: none;
 }
@@ -254,14 +254,14 @@ button:hover {
 
 .stat-tag {
   color: var(--muted);
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   font-weight: 500;
   letter-spacing: 1px;
 }
 
 .stat-value span {
   color: var(--deep);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   margin-right: 0.2rem;
   font-weight: 500;
 }
@@ -538,7 +538,7 @@ footer {
     height: 100%;
     background-color: var(--slate);
     border-radius: 2px 0 0 2px;
-    width: 78%;
+    width: 50%;
   }
   .rain-percentage {
     font-size: 0.625rem;
