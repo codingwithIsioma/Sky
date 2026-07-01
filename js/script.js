@@ -123,6 +123,7 @@ const displayHourlyForecast = (data) => {
   }
 
   hourlyContainer.innerHTML = displayHourly;
+  console.log(hourlyContainer);
 };
 
 // Update the DOM with 7-day forecast
@@ -160,6 +161,7 @@ const displayForecast = (daily) => {
     `;
   }
   weeklyContainer.innerHTML = forecastHTML;
+  console.log(weeklyContainer);
 };
 
 // ============================ ASYNC FUNCTIONS ===========================
@@ -210,6 +212,7 @@ async function getSuggestions(city) {
 
 // Fetch the data for the clicked suggestion
 async function handleSuggestionSearch(suggestion) {
+  if (!suggestion) return;
   try {
     const cityName = suggestion.dataset.name;
     const countryName = suggestion.dataset.country;
@@ -340,7 +343,7 @@ const convertCurrentTime = (time) => {
   convertCurrentTime = convertCurrentTime.join(":");
   return convertCurrentTime;
 };
-// Return time is "6am" format
+// Return time in "6am" format
 const convertTimeToMeridian = (times) => {
   const newTimes = times.map((time) => {
     const newTime = new Date(time).toLocaleTimeString();
