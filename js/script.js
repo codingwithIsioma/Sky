@@ -123,7 +123,6 @@ const displayHourlyForecast = (data) => {
   }
 
   hourlyContainer.innerHTML = displayHourly;
-  console.log(hourlyContainer);
 };
 
 // Update the DOM with 7-day forecast
@@ -161,7 +160,6 @@ const displayForecast = (daily) => {
     `;
   }
   weeklyContainer.innerHTML = forecastHTML;
-  console.log(weeklyContainer);
 };
 
 // ============================ ASYNC FUNCTIONS ===========================
@@ -346,10 +344,20 @@ const convertCurrentTime = (time) => {
 // Return time in "6am" format
 const convertTimeToMeridian = (times) => {
   const newTimes = times.map((time) => {
-    const newTime = new Date(time).toLocaleTimeString();
-    const hour = newTime.split(":")[0];
-    const meridian = newTime.split(" ")[1];
-    return `${hour}${meridian.toLowerCase()}`;
+    const hour = parseInt(time.split("T")[1].split(":")[0]);
+    let fullTime;
+    if (hour === 0) {
+      fullTime = "12am";
+    }
+    if (hour === 12) {
+      fullTime = "12pm";
+    }
+    if (hour >= 1 && hour < 12) {
+      fullTime = `${hour}am`;
+    } else if (hour > 12) {
+      fullTime = `${hour - 12}pm`;
+    }
+    return fullTime;
   });
   return newTimes;
 };
