@@ -4,6 +4,7 @@ const locationInformationContainer = document.querySelector(
   ".information-container",
 );
 const statsContainer = document.querySelector(".stats-container");
+const hourlyContainer = document.querySelector(".hourly-container");
 const weeklyContainer = document.querySelector(".weekly-container");
 
 // ============================ UI DISPLAY FUNCTIONS ==========================
@@ -60,7 +61,7 @@ const displayWeatherStats = (data) => {
   const currentWindSpeed = data.current.wind_speed_10m;
   const uvIndex = data.daily.uv_index_max[0];
   const uvIndexDesc = getUVIndex(Math.round(uvIndex));
-  const currentVisibility = data.hourly.visibility[0];
+  const currentVisibility = data.current.visibility;
   const visibilityInKM = currentVisibility / 1000;
 
   let displayStats = `
@@ -85,7 +86,44 @@ const displayWeatherStats = (data) => {
 };
 
 // Update the DOM with hourly weather data
-const displayHourlyForecast = () => {};
+const displayHourlyForecast = (data) => {
+  const getLocationTime = data.current.time;
+  const currentTimeInHourlyFormat = convertCurrentTime(getLocationTime);
+  const hourlyTime = [...data.hourly.time];
+  const findCurrentTimeIndex = hourlyTime.findIndex(
+    (hour) => hour === currentTimeInHourlyFormat,
+  );
+  const hourlyWeatherCode = [...data.hourly.weather_code];
+  const hourlyTemperature = [...data.hourly.temperature_2m];
+  const hourlyPrecipitation = [...data.hourly.precipitation_probability];
+  let newHourlyTime = hourlyTime.splice(findCurrentTimeIndex, 24);
+  newHourlyTime = convertTimeToMeridian(newHourlyTime);
+  newHourlyTime[0] = "Now";
+  let newHourlyWeatherCode = hourlyWeatherCode.splice(findCurrentTimeIndex, 24);
+  newHourlyWeatherCode = convertWeatherCode(newHourlyWeatherCode);
+  const newHourlyTemperature = hourlyTemperature.splice(
+    findCurrentTimeIndex,
+    24,
+  );
+  const newHourlyPrecipitation = hourlyPrecipitation.splice(
+    findCurrentTimeIndex,
+    24,
+  );
+
+  let displayHourly = "";
+  for (let i = 0; i < 24; i++) {
+    displayHourly += `
+          <div class="hourly-item">
+            <div class="hourly-time">${newHourlyTime[i]}</div>
+            <div class="hourly-icon">${newHourlyWeatherCode[i].icon}</div>
+            <div class="hourly-temp">${Math.round(newHourlyTemperature[i])}°C</div>
+            <div class="hourly-rain">${newHourlyPrecipitation[i] !== 0 ? Math.round(newHourlyPrecipitation[i]) + "%" : ""}</div>
+          </div>
+    `;
+  }
+
+  hourlyContainer.innerHTML = displayHourly;
+};
 
 // Update the DOM with 7-day forecast
 const displayForecast = (daily) => {
@@ -143,7 +181,7 @@ async function getCoordinates(city) {
 // Fetch current weather, hourly forecast and 7-day forecast
 async function getWeather(lat, lon) {
   try {
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_max&hourly=temperature_2m,rain,weather_code,visibility&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,wind_speed_10m,weather_code`;
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_max&hourly=temperature_2m,weather_code,precipitation_probability&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,wind_speed_10m,weather_code,visibility&timezone=auto&forecast_days=7`;
     const response = await fetch(weatherUrl);
     if (!response.ok) {
       throw new Error("There was an error in fetching data.");
@@ -151,7 +189,7 @@ async function getWeather(lat, lon) {
     const data = await response.json();
     return data;
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 }
 
@@ -173,16 +211,17 @@ async function getSuggestions(city) {
 // Fetch the data for the clicked suggestion
 async function handleSuggestionSearch(suggestion) {
   try {
-    const cityName = suggestion.target.dataset.name;
-    const countryName = suggestion.target.dataset.country;
-    const latitude = suggestion.target.dataset.lat;
-    const longitude = suggestion.target.dataset.lon;
+    const cityName = suggestion.dataset.name;
+    const countryName = suggestion.dataset.country;
+    const latitude = suggestion.dataset.lat;
+    const longitude = suggestion.dataset.lon;
     const weatherResponse = await getWeather(latitude, longitude);
     if (weatherResponse) {
       searchResultContainer.style.display = "none";
       searchInput.value = "";
       displayCurrentWeather(weatherResponse, cityName, countryName);
       displayWeatherStats(weatherResponse);
+      displayHourlyForecast(weatherResponse);
       displayForecast(weatherResponse.daily);
     }
   } catch (error) {
@@ -203,7 +242,7 @@ searchInput.addEventListener("input", (e) => {
 
 // Handles the click of any of the suggested search result
 searchResultContainer.addEventListener("click", (e) => {
-  handleSuggestionSearch(e);
+  handleSuggestionSearch(e.target.closest(".result-item"));
 });
 
 // ============================ HELPER FUNCTIONS ========================
@@ -287,4 +326,27 @@ const convertWeatherCode = (codes) => {
     return getWeatherDescription(code);
   });
   return weatherCodes;
+};
+// Return the current time in hourly format
+const convertCurrentTime = (time) => {
+  let convertCurrentTime = time.split(":");
+  if (
+    convertCurrentTime[1] === "15" ||
+    convertCurrentTime[1] === "30" ||
+    convertCurrentTime[1] === "45"
+  ) {
+    convertCurrentTime[1] = "00";
+  }
+  convertCurrentTime = convertCurrentTime.join(":");
+  return convertCurrentTime;
+};
+// Return time is "6am" format
+const convertTimeToMeridian = (times) => {
+  const newTimes = times.map((time) => {
+    const newTime = new Date(time).toLocaleTimeString();
+    const hour = newTime.split(":")[0];
+    const meridian = newTime.split(" ")[1];
+    return `${hour}${meridian.toLowerCase()}`;
+  });
+  return newTimes;
 };
