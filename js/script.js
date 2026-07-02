@@ -14,6 +14,12 @@ let currentUnit;
 let currentWeatherResponse = null;
 
 // ============================ UI DISPLAY FUNCTIONS ==========================
+
+// User agrees to share their location
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(usePosition);
+}
+
 // Display search suggestions
 const displaySearchResults = (results) => {
   let resultHTML = "";
@@ -327,6 +333,46 @@ async function handleSuggestionSearch(suggestion) {
     }
   } catch (error) {
     throw new Error(error);
+  }
+}
+
+// Handles the function if user decides to give access to location
+async function usePosition(position) {
+  try {
+    const data = await getCityFromCoordinates(
+      position.coords.latitude,
+      position.coords.longitude,
+    );
+    const weatherResponse = await getWeather(
+      position.coords.latitude,
+      position.coords.longitude,
+    );
+    if (weatherResponse && data) {
+      currentUnit = "celsius";
+      currentWeatherResponse = weatherResponse;
+      displaySkyGradient(weatherResponse.current);
+      displayCurrentWeather(weatherResponse, data.city, data.countryName);
+      displayWeatherStats(weatherResponse);
+      displayHourlyForecast(weatherResponse);
+      displayForecast(weatherResponse.daily);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getCityFromCoordinates(lat, long) {
+  try {
+    const response = await fetch(
+      `https://api-bdc.net/data/reverse-geocode?latitude=${lat}&longitude=${long}&localityLanguage=en&key=bdc_d6047f40fd3a4fca889f0aa28f58bfa9`,
+    );
+    if (!response.ok) {
+      throw new Error("There was an error in fetching data.");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
   }
 }
 
