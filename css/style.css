@@ -34,9 +34,9 @@ body {
 .sky-gradient {
   position: fixed;
   inset: 0;
-  z-index: -10;
-  opacity: 0.35;
-  background: radial-gradient(ellipse at 40% 0%, #2c3e55 0%, transparent 70%);
+  z-index: -1000;
+  opacity: 0.18;
+  /* background: radial-gradient(ellipse at 40% 0%, #2c3e55 0%, transparent 70%); */
   transition: var(--transition);
   pointer-events: none;
 }
@@ -300,15 +300,12 @@ button:hover {
   align-items: center;
   gap: 0.25rem;
   background-color: var(--card);
-  padding: 0.5rem 1.1rem;
+  min-width: 64px;
+  padding: 12px 8px;
   border: 1.5px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   transition: var(--transition);
-}
-
-.active {
-  background-color: var(--slate);
-  color: var(--bg);
+  cursor: pointer;
 }
 
 .hourly-time {
@@ -322,7 +319,7 @@ button:hover {
 }
 
 .hourly-temp {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -332,19 +329,36 @@ button:hover {
   font-weight: 600;
 }
 
-.hourly-item:focus,
 .hourly-item:hover {
   background-color: #11151c8b;
 }
 
-.hourly-item:focus .hourly-temp,
 .hourly-item:hover .hourly-temp {
-  color: var(--bg);
+  color: var(--deep);
 }
 
-.hourly-item:focus .hourly-rain,
 .hourly-item:hover .hourly-rain {
   color: var(--muted);
+}
+
+.hourly-item:hover {
+  background-color: #11151c8b;
+  transform: translateY(-2px);
+}
+
+.active {
+  background-color: var(--slate);
+  color: var(--bg);
+}
+.active .hourly-time {
+  color: var(--bg);
+}
+.active:hover {
+  background-color: var(--slate);
+}
+.active:hover .hourly-temp,
+.active:hover .hourly-time {
+  color: var(--bg);
 }
 
 /* WEEKLY STATS */
@@ -498,9 +512,9 @@ footer {
     font-size: 0.8rem;
     margin-bottom: 1rem;
   }
-  .hourly-item {
+  /* .hourly-item {
     padding: 0.8rem 1rem;
-  }
+  } */
   .hourly-time {
     font-size: 0.75rem;
   }
@@ -586,14 +600,7 @@ footer {
     margin-bottom: 1.5rem;
   }
   .hourly-item {
-    padding: 1rem 1.2rem;
-  }
-  .hourly-item:hover {
-    background-color: #11151c8b;
-    transform: translateY(-2px);
-  }
-  .hourly-item:hover .hourly-temp {
-    color: var(--deep);
+    min-width: 68px;
   }
   .hourly-temp {
     font-size: 1rem;

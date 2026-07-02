@@ -1,11 +1,17 @@
+const body = document.querySelector(".body");
+const skyGradient = document.querySelector(".sky-gradient");
 const searchInput = document.getElementById("searchInput");
 const searchResultContainer = document.querySelector(".search-results");
+const toggleTemperature = document.querySelector(".toggle-temperature");
 const locationInformationContainer = document.querySelector(
   ".information-container",
 );
 const statsContainer = document.querySelector(".stats-container");
 const hourlyContainer = document.querySelector(".hourly-container");
 const weeklyContainer = document.querySelector(".weekly-container");
+
+let currentUnit;
+let currentWeatherResponse = null;
 
 // ============================ UI DISPLAY FUNCTIONS ==========================
 // Display search suggestions
@@ -16,12 +22,26 @@ const displaySearchResults = (results) => {
             <div class="result-item" data-lon="${result.longitude}" data-lat="${result.latitude}" data-name="${result.name}" data-country="${result.country}">
               📍
               <p id="result-city">${result.name}</p>
-              <p id="result-country">${result.country ? result.country : ""}</p>
+              <p id="result-country">${result.admin1 ? result.admin1.slice(0, 15) + ", " : ""}${result.country ? result.country : ""}</p>
             </div>
         `;
   });
   searchResultContainer.innerHTML = resultHTML;
   searchResultContainer.style.display = "block";
+};
+
+// Display sky gradient according to wmo code
+const displaySkyGradient = (data) => {
+  const isNightOrDay = data.is_day;
+  const wmoCode = data.weather_code;
+  const getWeatherColor = getWeatherDescription(wmoCode);
+
+  if (isNightOrDay === 0) {
+    skyGradient.style.background =
+      "radial-gradient(ellipse at 50% 0%, #2c3e55 0%, transparent 70%)";
+  } else if (isNightOrDay === 1) {
+    skyGradient.style.background = `radial-gradient(ellipse at 50% 0%, ${getWeatherColor.color} 0%, transparent 70%)`;
+  }
 };
 
 // Update the DOM with current weather data
@@ -47,8 +67,8 @@ const displayCurrentWeather = (data, cityName, country) => {
     </div>
         <div class="weather-condition">${weatherDescription.desc}</div>
         <div class="feels-like">
-          Feels like <span class="feels-like-temp">${Math.round(apparentTemperature)}</span
-          ><span class="feels-like-temp">°C</span>
+          Feels like <span class="feels-like-temp" id="feels-temp">${Math.round(apparentTemperature)}</span
+          ><span class="feels-like-temp" id="feels-deg">°C</span>
     </div>
     `;
 
@@ -113,7 +133,7 @@ const displayHourlyForecast = (data) => {
   let displayHourly = "";
   for (let i = 0; i < 24; i++) {
     displayHourly += `
-          <div class="hourly-item">
+          <div class="hourly-item ${i === 0 ? "active" : ""}">
             <div class="hourly-time">${newHourlyTime[i]}</div>
             <div class="hourly-icon">${newHourlyWeatherCode[i].icon}</div>
             <div class="hourly-temp">${Math.round(newHourlyTemperature[i])}°C</div>
@@ -160,6 +180,83 @@ const displayForecast = (daily) => {
     `;
   }
   weeklyContainer.innerHTML = forecastHTML;
+};
+
+// Update the DOM with cel or fah temperature
+const displayCelOrFah = (data) => {
+  // DOM elements
+  const mainTemp = document.querySelector(".temp-value");
+  const mainTempDeg = document.querySelector(".temp-deg");
+  const feelsLikeTemp = document.querySelector("#feels-temp");
+  const feelsLikeTempDeg = document.querySelector("#feels-deg");
+  const hourlyTemp = document.querySelectorAll(".hourly-temp");
+  const weeklyTempMax = document.querySelectorAll(".weekly-high");
+  const weeklyTempMin = document.querySelectorAll(".weekly-low");
+  // fetch data from api
+  const currentTemperature = data.current.temperature_2m;
+  const currentApparentTemperature = data.current.apparent_temperature;
+  const forecastHighestTemp = data.daily.temperature_2m_max;
+  const forecastLowestTemp = data.daily.temperature_2m_min;
+  // get the next 24 hours temp from current time
+  const getLocationTime = data.current.time;
+  const currentTimeInHourlyFormat = convertCurrentTime(getLocationTime);
+  const hourlyTime = [...data.hourly.time];
+  const findCurrentTimeIndex = hourlyTime.findIndex(
+    (hour) => hour === currentTimeInHourlyFormat,
+  );
+  let hourlyTemperature = [...data.hourly.temperature_2m];
+  hourlyTemperature = hourlyTemperature.splice(findCurrentTimeIndex, 24);
+  // convert values to fahrenheit
+  const currentTemperatureInFahrenheit =
+    convertToFahrenheit(currentTemperature);
+  const currentApparentTemperatureInFahrenheit = convertToFahrenheit(
+    currentApparentTemperature,
+  );
+  const newHourlyTemperatureInFahrenheit = hourlyTemperature.map((temp) => {
+    return convertToFahrenheit(temp);
+  });
+  const forecastHighestTempInFahrenheit = forecastHighestTemp.map((temp) => {
+    return convertToFahrenheit(temp);
+  });
+  const forecastLowestTempInFahrenheit = forecastLowestTemp.map((temp) => {
+    return convertToFahrenheit(temp);
+  });
+
+  // update to DOM
+  if (currentUnit === "fahrenheit") {
+    toggleTemperature.textContent = "°C / °F";
+    mainTemp.textContent = `${Math.round(currentTemperature)}`;
+    mainTempDeg.textContent = "°C";
+    feelsLikeTemp.textContent = `${Math.round(currentApparentTemperature)}`;
+    feelsLikeTempDeg.textContent = "°C";
+    for (let i = 0; i < 7; i++) {
+      weeklyTempMax[i].textContent = `${Math.round(forecastHighestTemp[i])}°`;
+      weeklyTempMin[i].textContent = `${Math.round(forecastLowestTemp[i])}°`;
+    }
+    for (let i = 0; i < 24; i++) {
+      hourlyTemp[i].textContent = `${Math.round(hourlyTemperature[i])}°C`;
+    }
+    currentUnit = "celsius";
+    return;
+  } else if (currentUnit === "celsius") {
+    toggleTemperature.textContent = "°F / °C";
+    mainTemp.textContent = `${Math.round(currentTemperatureInFahrenheit)}`;
+    mainTempDeg.textContent = "°F";
+    feelsLikeTemp.textContent = `${Math.round(currentApparentTemperatureInFahrenheit)}`;
+    feelsLikeTempDeg.textContent = "°F";
+    for (let i = 0; i < 7; i++) {
+      weeklyTempMax[i].textContent =
+        `${Math.round(forecastHighestTempInFahrenheit[i])}°`;
+      weeklyTempMin[i].textContent =
+        `${Math.round(forecastLowestTempInFahrenheit[i])}°`;
+    }
+    for (let i = 0; i < 24; i++) {
+      hourlyTemp[i].textContent =
+        `${Math.round(newHourlyTemperatureInFahrenheit[i])}°F`;
+    }
+    currentUnit = "fahrenheit";
+    return;
+  }
 };
 
 // ============================ ASYNC FUNCTIONS ===========================
@@ -220,6 +317,9 @@ async function handleSuggestionSearch(suggestion) {
     if (weatherResponse) {
       searchResultContainer.style.display = "none";
       searchInput.value = "";
+      currentUnit = "celsius";
+      currentWeatherResponse = weatherResponse;
+      displaySkyGradient(weatherResponse.current);
       displayCurrentWeather(weatherResponse, cityName, countryName);
       displayWeatherStats(weatherResponse);
       displayHourlyForecast(weatherResponse);
@@ -244,6 +344,31 @@ searchInput.addEventListener("input", (e) => {
 // Handles the click of any of the suggested search result
 searchResultContainer.addEventListener("click", (e) => {
   handleSuggestionSearch(e.target.closest(".result-item"));
+});
+
+// Handles the toggle from cel to fah and vice versa
+toggleTemperature.addEventListener("click", () => {
+  if (currentWeatherResponse) {
+    displayCelOrFah(currentWeatherResponse);
+  }
+});
+
+// scrollintoview effect
+hourlyContainer.addEventListener("click", (e) => {
+  const card = e.target.closest(".hourly-item");
+  if (card) {
+    card.scrollIntoView({
+      behaviour: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }
+});
+
+body.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-results")) {
+    searchResultContainer.style.display = "none";
+  }
 });
 
 // ============================ HELPER FUNCTIONS ========================
@@ -360,4 +485,9 @@ const convertTimeToMeridian = (times) => {
     return fullTime;
   });
   return newTimes;
+};
+// Convert to Fah
+const convertToFahrenheit = (celsius) => {
+  const result = celsius * 1.8 + 32;
+  return result;
 };
